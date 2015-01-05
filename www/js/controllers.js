@@ -66,6 +66,60 @@ angular.module('starter.controllers', [])
 
   };
 
+  $scope.info = function() {
+    $cordovaFacebook.api("me", ["public_profile"])
+    .then(function(success) {
+        $log.debug(success);
+        $ionicPopup.alert({
+           title: 'Success!',
+           template: JSON.stringify(success)
+         });
+    }, function (error) {
+        $log.error(error);
+        $ionicPopup.alert({
+           title: 'Error!',
+           template: JSON.stringify(error)
+         });
+    });
+
+
+  
+  };
+
+  $scope.status = function() {
+    $cordovaFacebook.getLoginStatus()
+     .then(function(success) {
+        $log.debug(success);
+        $ionicPopup.alert({
+           title: 'Success!',
+           template: JSON.stringify(success)
+         });
+    }, function (error) {
+        $log.error(error);
+        $ionicPopup.alert({
+           title: 'Error!',
+           template: JSON.stringify(error)
+         });
+    });
+  };
+
+  $scope.logout = function() {
+    $cordovaFacebook.logout()
+     .then(function(success) {
+        $log.debug(success);
+        $ionicPopup.alert({
+           title: 'Success!',
+           template: JSON.stringify(success)
+         });
+    }, function (error) {
+        $log.error(error);
+        $ionicPopup.alert({
+           title: 'Error!',
+           template: JSON.stringify(error)
+         });
+    });
+  };  
+
 })
 
 .controller('PlaylistsCtrl', function($scope) {
