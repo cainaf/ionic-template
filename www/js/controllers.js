@@ -1,6 +1,6 @@
 angular.module('starter.controllers', [])
 
-.controller('AppCtrl', function($scope, $ionicModal, $timeout, AuthService) {
+.controller('AppCtrl', function($scope, $ionicModal, $timeout, AuthService, $log, $cordovaFacebook, $ionicPopup) {
   // Form data for the login modal
   $scope.loginData = {};
 
@@ -34,13 +34,35 @@ angular.module('starter.controllers', [])
 
   $scope.fbLogin = function() {
 
-    AuthService.facebook.login(['public_profile', 'email'])
-            .then(function() {
-              $state.go('<insert stateName to go too after login>');
-            })
-            .catch(function(err) {
-                $log.error(err);
-            });
+    $cordovaFacebook.login(["public_profile", "email", "user_friends"])
+      .then(function(success) {
+        $log.debug(success);
+        $ionicPopup.alert({
+           title: 'Success!',
+           template: JSON.stringify(success)
+         });
+        // { id: "634565435",
+        //   lastName: "bob"
+        //   ...
+        // }
+      }, function (error) {
+        $log.error(error);
+        $ionicPopup.alert({
+           title: 'Error!',
+           template: JSON.stringify(error)
+         });
+        // error
+      });
+
+
+    // AuthService.facebook.login(['public_profile', 'email'])
+    //         .then(function(resp) {
+    //           $log.debug(resp);
+    //           // $state.go('<insert stateName to go too after login>');
+    //         })
+    //         .catch(function(err) {
+    //             $log.error(err);
+    //         });
 
   };
 
