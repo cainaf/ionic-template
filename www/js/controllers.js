@@ -1,6 +1,6 @@
 angular.module('starter.controllers', [])
 
-.controller('AppCtrl', function($rootScope, $scope, $ionicModal, $timeout, AuthService, $log, $cordovaFacebook, $ionicPopup, $cordovaPush) {
+.controller('AppCtrl', function($rootScope, $scope, $cordovaLocalNotification, $ionicModal, $timeout, AuthService, $log, $cordovaFacebook, $ionicPopup, $cordovaPush) {
   // Form data for the login modal
   $scope.loginData = {};
 
@@ -135,44 +135,34 @@ angular.module('starter.controllers', [])
     $cordovaPush.register(androidConfig).then(function(result) {
       // Success -- send deviceToken to server, and store for future use
       console.log("result: " + result);
-      $ionicPopup.alert({
-           title: 'result!',
-           template: JSON.stringify(result)
-         });
-      // $http.post("http://server.com/tokens", {user: "Bob", tokenID : result.deviceToken);
-    }, function(err) {
-      console.log("err: " + err);
-      $ionicPopup.alert({
-           title: 'err!',
-           template: JSON.stringify(err)
-         });
+    //   $ionicPopup.alert({
+    //        title: 'result!',
+    //        template: JSON.stringify(result)
+    //      });
+    //   // $http.post("http://server.com/tokens", {user: "Bob", tokenID : result.deviceToken);
+    // }, function(err) {
+    //   console.log("err: " + err);
+    //   $ionicPopup.alert({
+    //        title: 'err!',
+    //        template: JSON.stringify(err)
+    //      });
     });
 
-    $rootScope.$on('pushNotificationReceived', function(event, notification) {
-      switch(notification.event) {
-        case 'registered':
-          if (notification.regid.length > 0 ) {
-            console.log('registration ID = ' + notification.regid);
-            alert('registration ID = ' + notification.regid);
-          }
-          break;
-
-        case 'message':
-          // this is the actual push notification. its format depends on the data model from the push server
-          alert('message = ' + notification.message + ' msgCount = ' + notification.msgcnt);
-          break;
-
-        case 'error':
-          alert('GCM error = ' + notification.msg);
-          break;
-
-        default:
-          alert('An unknown GCM event has occurred');
-          break;
-      }
-    });
+    
 
   };
+
+  $scope.localNotification = function() {
+    $cordovaLocalNotification.add({
+      id: 'some_notification_id2',
+      title: 'Opa',
+      message: 'Beleza?'
+      // parameter documentation:
+      // https://github.com/katzer/cordova-plugin-local-notifications#further-informations-1
+    }).then(function () {
+      console.log('callback for adding background notification');
+    });
+  }
 
 })
 
