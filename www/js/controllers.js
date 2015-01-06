@@ -1,6 +1,6 @@
 angular.module('starter.controllers', [])
 
-.controller('AppCtrl', function($scope, $ionicModal, $timeout, AuthService, $log, $cordovaFacebook, $ionicPopup) {
+.controller('AppCtrl', function($rootScope, $scope, $ionicModal, $timeout, AuthService, $log, $cordovaFacebook, $ionicPopup, $cordovaPush) {
   // Form data for the login modal
   $scope.loginData = {};
 
@@ -119,6 +119,60 @@ angular.module('starter.controllers', [])
          });
     });
   };  
+
+  $scope.pushInfo = function() {
+
+    // var iosConfig = {
+    //   "badge": "true",
+    //   "sound": "true",
+    //   "alert": "true"
+    // };
+
+    var androidConfig = {
+      "senderID": "618652915093",
+    };
+
+    $cordovaPush.register(androidConfig).then(function(result) {
+      // Success -- send deviceToken to server, and store for future use
+      console.log("result: " + result);
+      $ionicPopup.alert({
+           title: 'result!',
+           template: JSON.stringify(result)
+         });
+      // $http.post("http://server.com/tokens", {user: "Bob", tokenID : result.deviceToken);
+    }, function(err) {
+      console.log("err: " + err);
+      $ionicPopup.alert({
+           title: 'err!',
+           template: JSON.stringify(err)
+         });
+    });
+
+    $rootScope.$on('pushNotificationReceived', function(event, notification) {
+      switch(notification.event) {
+        case 'registered':
+          if (notification.regid.length > 0 ) {
+            console.log('registration ID = ' + notification.regid);
+            alert('registration ID = ' + notification.regid);
+          }
+          break;
+
+        case 'message':
+          // this is the actual push notification. its format depends on the data model from the push server
+          alert('message = ' + notification.message + ' msgCount = ' + notification.msgcnt);
+          break;
+
+        case 'error':
+          alert('GCM error = ' + notification.msg);
+          break;
+
+        default:
+          alert('An unknown GCM event has occurred');
+          break;
+      }
+    });
+
+  };
 
 })
 
